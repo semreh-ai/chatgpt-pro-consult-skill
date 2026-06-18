@@ -151,8 +151,29 @@ response_sha=""
 [[ -f "$response_path" ]] && response_sha="$(sha256sum "$response_path" | awk '{print $1}')"
 
 python3 - "$receipt_path" "$status" "$selected" "$room" "$prompt_file" "$prompt_sha" "$response_path" "$response_sha" "$error_msg" <<'PY'
-import json, sys, datetime
+import json, sys, datetime, re
 receipt, status, backend, room, prompt_file, prompt_sha, response_path, response_sha, error = sys.argv[1:]
+
+def redact_error(text):
+    if not text:
+        return None
+    patterns = [
+        (re.compile(r"sk-[A-Za-z0-9_-]{20,}"), "[REDACTED_OPENAI_API_KEY]"),
+        (re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"), "[REDACTED_GITHUB_TOKEN]"),
+        (re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}"), "[REDACTED_ANTHROPIC_API_KEY]"),
+        (re.compile(r"AKIA[0-9A-Z]{16}"), "[REDACTED_AWS_ACCESS_KEY_ID]"),
+        (re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"), "[REDACTED_JWT]"),
+        (re.compile(r"Bearer\s+[A-Za-z0-9._~+/=-]{24,}", re.I), "Bearer [REDACTED_TOKEN]"),
+        (re.compile(r"Cookie:\s*[^\n]{20,}", re.I), "Cookie: [REDACTED_COOKIE]"),
+        (re.compile(r"\b[a-z][a-z0-9+.-]*://([^\s:/]+):([^\s@/]+)@", re.I), lambda m: m.group(0).replace(m.group(2), "[REDACTED_PASSWORD]")),
+        (re.compile(r"(?i)\b(api[_-]?key|secret|token|password|passwd|pwd)\b\s*[:=]\s*['\"]?[^'\"\s]{16,}"), lambda m: re.sub(r"[:=].*", ": [REDACTED]", m.group(0))),
+        (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----", re.S), "[REDACTED_PRIVATE_KEY]"),
+    ]
+    redacted = text
+    for pattern, repl in patterns:
+        redacted = pattern.sub(repl, redacted)
+    return redacted[:2000]
+
 data = {
     "schema_version": "1.0",
     "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -164,7 +185,7 @@ data = {
     "response_path": response_path if response_sha else None,
     "response_sha256": response_sha or None,
     "redactions_applied": True,
-    "error": error or None,
+    "error": redact_error(error),
 }
 with open(receipt, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2)
