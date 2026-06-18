@@ -87,6 +87,26 @@ oracle --version
 Then the user must configure Oracle's own API/browser/login flow. This skill
 must not ask for ChatGPT credentials, cookies, tokens, or browser session data.
 
+When using Oracle to access the user's ChatGPT Pro subscription, force browser
+mode. API mode can route to OpenRouter/OpenAI/Azure depending on environment
+keys, which is not the user's ChatGPT Pro web account.
+
+First-time login setup:
+
+```bash
+oracle --engine browser --browser-manual-login \
+  --browser-keep-browser --browser-input-timeout 120000 \
+  -p "HI"
+```
+
+Subsequent Oracle backend calls from this skill force:
+
+```bash
+oracle --engine browser --browser-manual-login ...
+```
+
+Optional extra Oracle flags can be supplied with `CHATGPT_PRO_ORACLE_ARGS`.
+
 The preferred wrapper is included in this skill:
 
 ```bash

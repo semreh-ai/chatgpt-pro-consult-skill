@@ -66,6 +66,28 @@ Then configure Oracle's own ChatGPT/API/browser login flow according to its
 documentation. This skill will only call the local `oracle` command; it will not
 handle your ChatGPT credentials or browser session itself.
 
+To use your ChatGPT Pro subscription instead of OpenRouter/API routing, Oracle
+must run in browser mode. This wrapper forces browser mode for the `oracle`
+backend:
+
+```bash
+oracle --engine browser --browser-manual-login -p "test"
+```
+
+First-time login setup:
+
+```bash
+oracle --engine browser --browser-manual-login \
+  --browser-keep-browser --browser-input-timeout 120000 \
+  -p "HI"
+```
+
+If you need extra Oracle browser flags, pass them through:
+
+```bash
+export CHATGPT_PRO_ORACLE_ARGS="--browser-auto-reattach-delay 5s --browser-auto-reattach-interval 3s --browser-auto-reattach-timeout 60s"
+```
+
 After installing a backend, verify detection:
 
 ```bash

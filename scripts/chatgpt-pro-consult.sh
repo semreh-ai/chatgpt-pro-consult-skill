@@ -132,7 +132,12 @@ run_backend() {
       fi
       ;;
     oracle)
-      timeout "$timeout_seconds" oracle -p "$(cat "$prompt_file")"
+      # Force browser mode so this backend uses the user's logged-in ChatGPT
+      # account instead of API/OpenRouter routing when OPENROUTER_API_KEY or
+      # other provider keys are present in the environment.
+      # Extra Oracle flags can be supplied via CHATGPT_PRO_ORACLE_ARGS.
+      # shellcheck disable=SC2086
+      timeout "$timeout_seconds" oracle --engine browser --browser-manual-login ${CHATGPT_PRO_ORACLE_ARGS:-} -p "$(cat "$prompt_file")"
       ;;
   esac
 }
