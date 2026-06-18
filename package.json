@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-pro-consult-skill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "npx skills-compatible ChatGPT Pro consult skill with local backend adapters, redaction, rooms, locks, and receipts.",
   "license": "MIT",

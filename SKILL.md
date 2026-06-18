@@ -72,6 +72,21 @@ Never silently merge Pro output into your own reasoning. Never fabricate Pro out
 
 ## Backend contract
 
+Important: this skill is not itself a ChatGPT Pro backend. It is a safe wrapper
+around a backend installed on the user's machine. If preflight reports that no
+`chatgpt-pro` or `oracle` backend exists, do not claim a Pro consult happened.
+Tell the user to install/configure a backend first.
+
+Recommended first backend:
+
+```bash
+npm install -g @steipete/oracle
+oracle --version
+```
+
+Then the user must configure Oracle's own API/browser/login flow. This skill
+must not ask for ChatGPT credentials, cookies, tokens, or browser session data.
+
 The preferred wrapper is included in this skill:
 
 ```bash

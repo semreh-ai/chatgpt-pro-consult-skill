@@ -51,6 +51,27 @@ npx skills add ./chatgpt-pro-consult-skill --list
 
 ## Backend options
 
+The skill itself is not a ChatGPT Pro backend. It is a safe wrapper around one.
+If preflight says no `chatgpt-pro` or `oracle` backend was found, install and
+configure one of the backends below.
+
+Quickest path:
+
+```bash
+npm install -g @steipete/oracle
+oracle --version
+```
+
+Then configure Oracle's own ChatGPT/API/browser login flow according to its
+documentation. This skill will only call the local `oracle` command; it will not
+handle your ChatGPT credentials or browser session itself.
+
+After installing a backend, verify detection:
+
+```bash
+bash scripts/preflight.sh --backend auto --json
+```
+
 Backend selection order:
 
 1. `--backend <name>`
