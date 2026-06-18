@@ -1,0 +1,15 @@
+{
+  "name": "chatgpt-pro-consult-skill",
+  "version": "0.1.0",
+  "private": true,
+  "description": "npx skills-compatible ChatGPT Pro consult skill with local backend adapters, redaction, rooms, locks, and receipts.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/semreh-ai/chatgpt-pro-consult-skill.git"
+  },
+  "scripts": {
+    "skills:list": "npx -y skills add . --list",
+    "test": "bash tests/smoke.sh && python3 -m unittest discover -s tests -p 'test_*.py'"
+  }
+}

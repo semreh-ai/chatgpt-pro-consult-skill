@@ -1,0 +1,9 @@
+.chatgpt-pro-consult/
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+!.env.example
